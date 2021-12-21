@@ -5,7 +5,7 @@
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace IdentityServer
+namespace IdentityServerInstance
 {
     public static class Config
     {
@@ -17,10 +17,23 @@ namespace IdentityServer
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
-            { };
+            {
+                new ApiScope("Movies.API.Read", "Movies.Read"),
+                new ApiScope("Movies.API.Write", "Movies.Write")
+            };
 
         public static IEnumerable<Client> Clients =>
             new Client[] 
-            { };
+            {
+            new Client()
+               {
+                    ClientId = "client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets =
+                        {
+                            new Secret("secret".Sha256())
+                        },
+                    AllowedScopes = { "Movies.API.Read" }
+               }};
     }
 }

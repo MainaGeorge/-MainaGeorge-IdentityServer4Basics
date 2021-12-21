@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Movies.API.Data;
 
@@ -23,6 +24,16 @@ namespace Movies.API
         {
 
             services.AddControllers();
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", opts => 
+                {
+                    opts.Authority = "https://localhost:5001";
+                    opts.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = false,
+                    }
+                        ;
+                });
             services.AddDbContext<MoviesContext>(opts =>
             {
                 opts.UseInMemoryDatabase("inMemoryData");
@@ -46,6 +57,8 @@ namespace Movies.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
